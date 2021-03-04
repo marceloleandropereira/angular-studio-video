@@ -1,4 +1,13 @@
-<div class="canvas-container">
-  <canvas #studioCanvas width="480" height="360"></canvas>
-  <video #webcamStudio width="480" height="360" autoplay playsinline></video>
+<div class="studio-container">
+  <h1>Studio Video</h1>
+  <div class="canvas-container">
+    <canvas #studioCanvas width="{{ canvasSettings.width }}" height="{{ canvasSettings.height }}"></canvas>
+    <video #webcamStudio class="webcam-video" autoplay playsinline></video>
+  </div>
+  <div class="templates">
+    <button (click)="chooseTemplate(1)">Webcam Solo</button>
+    <button (click)="chooseTemplate(2)">Meio a meio</button>
+    <button (click)="clearCanvas()">Limpar Transmissão</button>
+    <button (click)="recordCanvas()">Gravar</button>
+  </div>
 </div>

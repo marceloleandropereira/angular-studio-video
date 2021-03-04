@@ -1,0 +1,23 @@
+.studio-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  canvas {
+    border: 1px solid lightgray;
+  }
+}
+
+.webcam-video {
+  display: none;
+}
+
+.templates {
+  margin-top: 16px;
+
+  button {
+    height: 50px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin-right: 8px;
+  }
+}
