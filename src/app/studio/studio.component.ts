@@ -1,4 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { MediaRecorder } from 'extendable-media-recorder';
 
 @Component({
   selector: 'app-studio',
@@ -9,6 +10,8 @@ export class StudioComponent {
 
   @ViewChild('studioCanvas', { static: true }) studioCanvas: ElementRef;
   @ViewChild('webcamStudio', { static: false }) webcamStudio: ElementRef<HTMLVideoElement>;
+
+  public recordedChunks: any = [];
 
   public canvasSettings = {
     width: 720,
@@ -21,6 +24,7 @@ export class StudioComponent {
   };
 
   private webcamOn = true;
+  private mediaRecorder: any;
 
   ngAfterViewInit(): void {
     this.initWebCam();
@@ -44,7 +48,45 @@ export class StudioComponent {
   }
 
   public recordCanvas(): void {
-    
+    const stream = this.studioCanvas.nativeElement.captureStream(25);
+
+    const options = { mimeType: "video/webm; codecs=vp9" };
+    this.mediaRecorder = new MediaRecorder(stream, options);
+
+    const that = this;
+
+    this.mediaRecorder.ondataavailable = function(event: any) {
+      if (event.data.size > 0) {
+        console.log('event.data', event.data);
+        debugger;
+        that.recordedChunks.push(event.data);
+        console.log(that.recordedChunks);
+        that.download();
+      } else {
+        console.log('else');
+        // ...
+      }
+    };
+    this.mediaRecorder.start();
+
+    setTimeout(() => {
+      console.log("stopping");
+      this.mediaRecorder.stop();
+    }, 5000);
+  }
+
+  private download(): void {
+    var blob = new Blob(this.recordedChunks, {
+      type: "video/webm"
+    });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    // a.style = "display: none";
+    a.href = url;
+    a.download = "test.webm";
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 
   private getCanvasContext(): CanvasRenderingContext2D {
