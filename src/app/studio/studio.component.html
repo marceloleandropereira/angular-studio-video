@@ -7,6 +7,7 @@
   <div class="templates">
     <button (click)="chooseTemplate(1)">Webcam Solo</button>
     <button (click)="chooseTemplate(2)">Meio a meio</button>
+    <button (click)="chooseTemplate(3)">Meio a meio 2</button>
     <button (click)="clearCanvas()">Limpar Transmissão</button>
     <button *ngIf="!recording" (click)="recordCanvas()">
       Gravar
@@ -14,5 +15,14 @@
     <button *ngIf="recording" disabled>
       Gravando...
     </button>
+  </div>
+  <div class="templates">
+    <button (click)="chooseBg('#FFFFFF')">BG White</button>
+    <button (click)="chooseBg('#FF0000')">BG Red</button>
+    <button (click)="chooseBg('#00FF00')">BG Green</button>
+    <button (click)="chooseBg('#0000FF')">BG Blue</button>
+  </div>
+  <div class="templates">
+    <button (click)="connect('#0000FF')">Conectar</button>
   </div>
 </div>
