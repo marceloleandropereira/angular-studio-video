@@ -12,6 +12,7 @@ export class StudioComponent {
   @ViewChild('webcamStudio', { static: false }) webcamStudio: ElementRef<HTMLVideoElement>;
 
   public recordedChunks: any = [];
+  public recording = false;
 
   public canvasSettings = {
     width: 720,
@@ -48,6 +49,7 @@ export class StudioComponent {
   }
 
   public recordCanvas(): void {
+    this.recording = true;
     const stream = this.studioCanvas.nativeElement.captureStream(25);
 
     const options = { mimeType: "video/webm; codecs=vp9" };
@@ -57,11 +59,9 @@ export class StudioComponent {
 
     this.mediaRecorder.ondataavailable = function(event: any) {
       if (event.data.size > 0) {
-        console.log('event.data', event.data);
-        debugger;
         that.recordedChunks.push(event.data);
-        console.log(that.recordedChunks);
         that.download();
+        that.recording = false;
       } else {
         console.log('else');
         // ...

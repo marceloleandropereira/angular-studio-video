@@ -8,6 +8,11 @@
     <button (click)="chooseTemplate(1)">Webcam Solo</button>
     <button (click)="chooseTemplate(2)">Meio a meio</button>
     <button (click)="clearCanvas()">Limpar Transmissão</button>
-    <button (click)="recordCanvas()">Gravar</button>
+    <button *ngIf="!recording" (click)="recordCanvas()">
+      Gravar
+    </button>
+    <button *ngIf="recording" disabled>
+      Gravando...
+    </button>
   </div>
 </div>
