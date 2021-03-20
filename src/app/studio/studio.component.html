@@ -23,6 +23,12 @@
     <button (click)="chooseBg('#0000FF')">BG Blue</button>
   </div>
   <div class="templates">
-    <button (click)="connect('#0000FF')">Conectar</button>
+    <span>Server</span>
+    <input style="margin-left: 10px;" type="text" [(ngModel)]="rtmpServer">
+    <br>
+    <span>Stream Key</span>
+    <input style="margin-left: 10px;" type="text" [(ngModel)]="streamKey">
+    <br>
+    <button (click)="connect()">Conectar</button>
   </div>
 </div>

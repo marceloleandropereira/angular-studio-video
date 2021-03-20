@@ -29,6 +29,11 @@ export class StudioComponent {
   private webcamOn = true;
   private mediaRecorder: any;
 
+  private ws: WebSocket;
+  private wsMediaRecorder: any;
+  public rtmpServer: string = 'rtmp://a.rtmp.youtube.com/live2';
+  public streamKey: string = '';
+
   ngAfterViewInit(): void {
     this.initWebCam();
   }
@@ -53,7 +58,31 @@ export class StudioComponent {
     this.bgColor = color;
   }
 
-  public async connect(server: string) {
+  public async connect() {
+    let url = 'ws://3.88.220.70:3000/rtmp/' + encodeURIComponent(`${this.rtmpServer}/${this.streamKey}`);
+    console.log(url);
+    this.ws = new WebSocket(url);
+
+    this.ws.addEventListener('open', (e) => {
+      console.log('WebSocket Open', e);
+      let mediaStream = this.studioCanvas.nativeElement.captureStream(30); // 30 FPS
+      this.wsMediaRecorder = new MediaRecorder(mediaStream, {
+        mimeType: 'video/webm;codecs=h264',
+        videoBitsPerSecond : 3000000
+      });
+      this.wsMediaRecorder.addEventListener('dataavailable', (e: any) => {
+        this.ws.send(e.data);
+      });
+
+      this.wsMediaRecorder.addEventListener('stop', this.ws.close.bind(this.ws));
+
+      this.wsMediaRecorder.start(1000); // Start recording, and dump data every second
+    });
+
+    this.ws.addEventListener('close', (e) => {
+      console.log('WebSocket Close', e);
+      this.wsMediaRecorder.stop();
+    });
   }
 
   public clearCanvas(): Promise<void> {
