@@ -28,6 +28,7 @@ export class StudioComponent {
 
   private webcamOn = true;
   private mediaRecorder: any;
+  private stream: MediaStream;
 
   private ws: WebSocket;
   private wsMediaRecorder: any;
@@ -66,6 +67,20 @@ export class StudioComponent {
     this.ws.addEventListener('open', (e) => {
       console.log('WebSocket Open', e);
       let mediaStream = this.studioCanvas.nativeElement.captureStream(30); // 30 FPS
+
+      console.log(this.stream.getTracks())
+      for (const track of this.stream.getTracks()) {
+        mediaStream.addTrack(track);
+      }
+
+      const tracks = mediaStream.getTracks();
+      const videoTracks = mediaStream.getVideoTracks();
+      const audioTracks = mediaStream.getAudioTracks();
+
+      console.log(tracks)
+      console.log(videoTracks)
+      console.log(audioTracks)
+
       this.wsMediaRecorder = new MediaRecorder(mediaStream, {
         mimeType: 'video/webm;codecs=h264',
         videoBitsPerSecond : 3000000
@@ -109,6 +124,10 @@ export class StudioComponent {
     this.recording = true;
     const stream = this.studioCanvas.nativeElement.captureStream(25);
 
+    console.log(this.stream.getTracks())
+    for (const track of this.stream.getTracks()) {
+      stream.addTrack(track);
+    }
     const videoTracks = stream.getVideoTracks();
     const audioTracks = stream.getAudioTracks();
     if (videoTracks.length > 0) {
@@ -169,6 +188,7 @@ export class StudioComponent {
     navigator.mediaDevices
       .getUserMedia(this.constraints)
       .then(function (stream) {
+        that.stream = stream;
         that.webcamStudio.nativeElement.srcObject = stream;
         requestAnimationFrame(() => {
           that.drawCam();
